@@ -1,0 +1,70 @@
+# Import necessary modules
+import os
+import csv
+
+# Create the environment to get the data (filepath, csv, etc)
+dirpath = os.path.dirname(os.path.realpath(__file__))
+
+# Input file
+input_file = os.path.join(dirpath,'budget_data.csv')
+
+# Output file
+output_file = os.path.join(dirpath,"Pybank_results.txt")
+
+# Creating empty lists to store the data
+Months = []
+Profit_Loss = []
+PL_Changes = []
+
+# Reading the csv file
+with open(input_file, encoding='utf-8') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=',')
+
+    # Skipping the header
+    csv_header = next(csvfile)
+
+    # Number of months
+    for row in csvreader:
+        Months.append(row[0])
+        Profit_Loss.append(float(row[1]))
+
+# Calculating the changes in P&L
+PL_Changes = [Profit_Loss[x+1]-Profit_Loss[x] for x in range(len(Profit_Loss)-1)]
+
+New_list = zip(Months[1:],PL_Changes)
+
+Increase = max(PL_Changes)
+Decrease = min(PL_Changes)
+
+# Finding the month
+for row in New_list:
+    if row[1]==Increase:
+        Increase_Month = row[0]
+    elif row[1] == Decrease:
+        Decrease_Month = row[0]
+
+# Summarizing all the values
+total_month = str(len(Months))
+total_profit_loss = sum(Profit_Loss)
+average_changes = round(sum(PL_Changes) / len(PL_Changes),2)
+Increase = max(PL_Changes)
+Decrease = min(PL_Changes)
+
+# Printing to the terminal 
+print("Financial Analyis")
+print("-------------------------------")
+print("Total Months: " + total_month)
+print("Total: " + "$" + str(total_profit_loss))
+print("Average  Change: " + str(average_changes))
+print("Greatest Increase in Profits: " + str(Increase_Month) + " (" + str(Increase) + ")")
+print("Greatest Decrease in Profits: " + str(Decrease_Month) + " (" + str(Decrease) + ")")
+
+# Printing to text file
+with open(output_file,'w') as textfile:
+    print("Financial Analyis", file=textfile)
+    print("-----------------------------------",file=textfile)
+    print("Total Months: " + total_month, file=textfile)
+    print("Total: " + "$" + str(total_profit_loss), file=textfile)
+    print("Average  Change: " + str(average_changes), file=textfile)
+    print("Greatest Increase in Profits: " + str(Increase_Month) + " (" + str(Increase) + ")",file=textfile)
+    print("Greatest Decrease in Profits: " + str(Decrease_Month) + " (" + str(Decrease) + ")",file=textfile)
