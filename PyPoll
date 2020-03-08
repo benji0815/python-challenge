@@ -1,0 +1,98 @@
+# Import necessary modules
+import os
+import csv
+
+# Create the environment to get the data (filepath, csv, etc)
+dirpath = os.path.dirname(os.path.realpath(__file__))
+
+# Input file
+election_file = os.path.join(dirpath,'election_data.csv')
+
+# Creating the Output Text File
+output_file = os.path.join(dirpath,"PyPoll_results.txt")
+
+# Candidate
+Candidate =[]
+
+# Variables (initiated at 0) to count the number of votes (useful for all the calculations)
+total_Khan = 0
+total_Li = 0
+total_Correy = 0
+total_Tooley = 0
+
+# Reading the csv file
+with open(election_file, encoding='utf-8') as election_csv:
+    csvreader = csv.reader(election_csv, delimiter=',')
+
+    # Skipping the header
+    csv_header = next(election_csv)
+
+    # Grabbing the number of votes cast per candidate and incrementing the variables using an if condition
+    for row in csvreader:
+        Candidate.append(row[2])
+        
+        if row[2] =="Khan":
+            total_Khan+=1
+        elif row[2] =="Li":
+            total_Li+=1
+        elif row[2] =="Correy":
+            total_Correy+=1
+        elif row[2] =="O'Tooley":
+            total_Tooley+=1
+        else:
+            print("Could not find your candidate")
+
+#Calculating results
+Total_Votes = (total_Khan + total_Li + total_Correy + total_Tooley)
+print(total_Khan)
+print(total_Li)
+print(total_Correy)
+print(total_Tooley)
+print(Total_Votes)
+
+# List containing the total per candidate. In this case, we have only four candidates but if 
+# had more, using a list here would be appropriate
+ 
+Total_candidate = [total_Khan,total_Li,total_Correy,total_Tooley]
+
+#To get the complete list of candidates, I converted the "Candidate" list into a set (for non-duplicate values)
+List_of_candidates = set(Candidate)
+
+# Calculating the percentages of votes per candidate
+Percent_candidates = [round(((Total_candidate[x]/Total_Votes)*100),2) for x in range(len(Total_candidate))]
+
+# Determining the winner by building dictionary
+
+candidate_dict = {"Khan": total_Khan, 
+"Li":total_Li, 
+"Correy": total_Correy, 
+"O'Tooley": total_Tooley}
+
+winner = max(candidate_dict, key=candidate_dict.get)
+
+# Printing out results to the terminal
+print("Election Results")
+print("-------------------------------")
+print("Total Votes: " + str(Total_Votes))
+print("-------------------------------")
+
+print("Khan: " + str(Percent_candidates[0]) + "% " + "(" + str(total_Khan) + ")")
+print("Correy: " + str(Percent_candidates[2]) + "% " + "(" + str(total_Correy) + ")")
+print("Li: " + str(Percent_candidates[1]) + "% " + "(" + str(total_Li) + ")")
+print("O'Tooley: " + str(Percent_candidates[3]) + "% " + "(" + str(total_Tooley) + ")")
+print("-------------------------------")
+print("Winner: " +str(winner))
+
+# Printing out to a textfile
+with open(output_file,'w') as textfile:
+    print("Election Results", file=textfile)
+    print("-------------------------------", file=textfile)
+    print("Total Votes: " + str(Total_Votes),file=textfile)
+    print("-------------------------------",file=textfile)
+
+    print("Khan: " + str(Percent_candidates[0]) + "% " + "(" + str(total_Khan) + ")",file=textfile)
+    print("Correy: " + str(Percent_candidates[2]) + "% " + "(" + str(total_Correy) + ")",file=textfile)
+    print("Li: " + str(Percent_candidates[1]) + "% " + "(" + str(total_Li) + ")",file=textfile)
+    print("O'Tooley: " + str(Percent_candidates[3]) + "% " + "(" + str(total_Tooley) + ")",file=textfile)
+    print("-------------------------------",file=textfile)
+    print("Winner: " +str(winner),file=textfile)
